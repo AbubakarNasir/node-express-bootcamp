@@ -1,10 +1,9 @@
-// import os from "node:os";
-
-// console.log("Operating system:", os.platform());
-// console.log("Architecture:", os.arch());
-// console.log("Free memory:", os.freemem());
-
+import os from "node:os";
 import path from "node:path";
+
+console.log("Operating system:", os.platform());
+console.log("Architecture:", os.arch());
+console.log("Free memory:", os.freemem());
 
 const filePath = "projects/backend/app.js";
 
