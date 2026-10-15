@@ -1,6 +1,7 @@
 import express from "express";
 
 const app = express();
+app.use(express.static("public"));
 app.use(express.json());
 
 const port = Number(process.env.PORT || 3000);
@@ -8,6 +9,19 @@ const port = Number(process.env.PORT || 3000);
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
   throw new Error("PORT must be a valid port number");
 }
+
+const users = [
+  {
+    id: 1,
+    name: "Abubakar",
+    email: "abubakar@example.com"
+  },
+  {
+    id: 2,
+    name: "Amina",
+    email: "amina@example.com"
+  }
+];
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
@@ -23,6 +37,10 @@ function checkAccessKey(req, res, next) {
 
   next();
 }
+
+app.get("/api/users", (req, res) => {
+  res.json(users);
+});
 
 app.get("/", (req, res) => {
   res.send("Hello from express!");
