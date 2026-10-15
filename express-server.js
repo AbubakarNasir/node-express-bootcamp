@@ -49,8 +49,18 @@ app.get("/protected", checkAccessKey, (req, res) => {
   res.send("Welcome to the protected route!");
 });
 
+app.get("/error", (req, res, next) => {
+  next(new Error("Something failed!"));
+});
+
 app.use((req, res) => {
   res.status(404).send("404 Not Found");
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.message);
+
+  res.status(500).send("Something went wrong!");
 });
 
 app.listen(PORT, () => {
