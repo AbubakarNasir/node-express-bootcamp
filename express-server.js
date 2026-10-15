@@ -2,7 +2,12 @@ import express from "express";
 
 const app = express();
 app.use(express.json());
-const PORT = 3000;
+
+const port = Number(process.env.PORT || 3000);
+
+if (!Number.isInteger(port) || port < 1 || port > 65535) {
+  throw new Error("PORT must be a valid port number");
+}
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
@@ -63,6 +68,6 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something went wrong!");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
