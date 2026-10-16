@@ -42,6 +42,75 @@ app.get("/api/users", (req, res) => {
   res.json(users);
 });
 
+app.get("/api/users/:id", (req, res) => {
+    const userId = Number(req.params.id, 10);
+    const user = users.find(user => user.id === userId);
+
+    if (!Number.isInteger(userId) || userId < 1) {
+        return res.status(400).send("Invalid user ID");
+    }
+
+    if (!user) {
+        return res.status(404).send("User not found");
+    }
+
+    res.json(user);
+});
+
+app.post("/api/users", (req, res) => {
+    const { name, email } = req.body;
+
+    if (!name || !email) {
+        return res.status(400).send("Name and email are required");
+    }
+
+    const newUser = {
+        id: users[users.length - 1].id + 1,
+        name,
+        email
+    };
+
+    users.push(newUser);
+    res.status(201).json(newUser);
+});
+
+app.put("/api/users/:id", (req, res) => {
+    const userId = Number(req.params.id);
+    const { name, email } = req.body;
+    const userIndex = users.findIndex(user => user.id === userId);
+
+    if (!Number.isInteger(userId) || userId < 1) {
+        return res.status(400).send("Invalid user ID");
+    }
+
+    if (userIndex === -1) {
+        return res.status(404).send("User not found");
+    }
+
+    if (!name || !email) {
+        return res.status(400).send("Name and email are required");
+    }
+
+    users[userIndex] = { id: userId, name, email };
+    res.json(users[userIndex]);
+});
+
+app.delete("/api/users/:id", (req, res) => {
+    const userId = Number(req.params.id);
+    const userIndex = users.findIndex(user => user.id === userId);
+
+    if (!Number.isInteger(userId) || userId < 1) {
+        return res.status(400).send("Invalid user ID");
+    }
+
+    if (userIndex === -1) {
+        return res.status(404).send("User not found");
+    }
+
+    users.splice(userIndex, 1);
+    res.status(204).send();
+});
+
 app.get("/", (req, res) => {
   res.send("Hello from express!");
 });
