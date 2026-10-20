@@ -1,22 +1,39 @@
 import users from "../data/user.js";
+import pool from "../db.js";
 
-export function getAllUsers(req, res) {
-    res.json(users);
+export async function getAllUsers(req, res, next) {
+  try {
+    const result = await pool.query(
+      "SELECT id, name, email FROM users ORDER BY id"
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    next(error);
+  }
 }
 
-export function getUserById(req, res) {
+export async function getUserById(req, res, next) {
     const userId = Number(req.params.id);
-    const user = users.find(user => user.id === userId);
 
     if (!Number.isInteger(userId) || userId < 1) {
         return res.status(400).send("Invalid user ID");
     }
 
-    if (!user) {
-        return res.status(404).send("User not found");
-    }
+    try {
+        const result = await pool.query(
+            "SELECT id, name, email FROM users WHERE id = $1",
+            [userId]
+        );
 
-    res.json(user);
+        if (result.rows.length === 0) {
+            return res.status(404).send("User not found");
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        next(error);
+    }
 }
 
 export function createNewUser(req, res) {
