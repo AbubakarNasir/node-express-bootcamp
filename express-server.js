@@ -1,6 +1,7 @@
 import express from "express";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 app.use(express.static("public"));
@@ -29,14 +30,7 @@ function checkAccessKey(req, res, next) {
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
-
-app.get("/", (req, res) => {
-  res.send("Hello from express!");
-});
-
-app.get("/about", (req, res) => {
-    res.send("This is my about page");
-});
+app.use("/api/auth", authRoutes);
 
 app.get("/protected", checkAccessKey, (req, res) => {
   res.send("Welcome to the protected route!");
