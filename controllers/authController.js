@@ -1,5 +1,8 @@
 import pool from "../db.js";
 import argon2 from "argon2";
+import jwt from "jsonwebtoken";
+
+const jwtSecret = process.env.JWT_SECRET;
 
 export async function registerUser(req, res) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -106,8 +109,15 @@ export async function loginUser(req, res) {
             });
         }
 
+        const token = jwt.sign(
+            { sub: String(user.id) },
+            jwtSecret,
+            { expiresIn: "15m" }
+        );
+
         return res.status(200).json({
             message: "Login successful.",
+            token,
             user: {
                 id: user.id,
                 name: user.name,

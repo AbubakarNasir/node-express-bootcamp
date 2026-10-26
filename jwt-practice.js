@@ -13,3 +13,7 @@ const token = jwt.sign(
 );
 
 console.log("JWT created successfully:", token);
+
+const decoded = jwt.verify(token, secret);
+
+console.log("Verified token payload:", decoded);
