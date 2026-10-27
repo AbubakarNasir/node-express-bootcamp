@@ -3,6 +3,7 @@ import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import { authenticateToken } from "./middleware/authMiddleware.js";
+import { authorizeAdmin } from "./middleware/authorizeMiddleware.js";
 
 const app = express();
 app.use(express.static("public"));
@@ -32,6 +33,16 @@ function checkAccessKey(req, res, next) {
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.get(
+    "/api/admin",
+    authenticateToken,
+    authorizeAdmin,
+    (req, res) => {
+        res.status(200).json({
+            message: "Welcome, admin.",
+        });
+    }
+);
 
 app.get("/api/protected", authenticateToken, (req, res) => {
     res.json({
