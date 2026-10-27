@@ -2,6 +2,7 @@ import express from "express";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import { authenticateToken } from "./middleware/authMiddleware.js";
 
 const app = express();
 app.use(express.static("public"));
@@ -31,6 +32,13 @@ function checkAccessKey(req, res, next) {
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+
+app.get("/api/protected", authenticateToken, (req, res) => {
+    res.json({
+        message: "Access granted.",
+        user: req.user,
+    });
+});
 
 app.get("/protected", checkAccessKey, (req, res) => {
   res.send("Welcome to the protected route!");
